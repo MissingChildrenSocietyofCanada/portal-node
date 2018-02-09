@@ -26,7 +26,7 @@ exports.requiredAADGroupId = process.env.RequiredAADGroupId;
 
 exports.destroySessionUrl = process.env.DestroySessionUrl || 'https://login.microsoftonline.com/common/oauth2/logout?post_logout_redirect_uri=http://localhost:3000'
 exports.Port = process.env.PORT || 3000;
-exports.AppInsights = process.env.AppInsightsInstrumentationKey;
+exports.AppInsights = process.env.APPINSIGHTS_INSTRUMENTATIONKEY;
 
 // Configuration required for DocumentDB
 exports.docDB = {

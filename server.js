@@ -111,15 +111,16 @@ app.use(passport.session());
 app.use(app.router);
 
 function ensureAuthorized(req, res, next) {
-  if (req.isAuthenticated()) {
-    // User is authenticated, ensure they are authorized
-    if (userIsAuthorized(req.user)) {
-      return next();
-    }
-    res.redirect('/unauthorized');
-    return;
-  }
-  res.redirect('/login');
+	if (req.isAuthenticated()) {
+		console.log('User is authenticated');
+		// User is authenticated, ensure they are authorized
+		if (userIsAuthorized(req.user)) {
+		return next();
+		}
+		res.redirect('/unauthorized');
+		return;
+	}
+  	res.redirect('/login');
 };
 
 // Verifies that the user is authorized to use this application
@@ -161,7 +162,7 @@ app.get('/login/aad', function (req, res, next) {
     passport.authenticate('azuread-openidconnect',
       {
         response: res,
-        failureRedirect: '/'
+		failureRedirect: '/'
       }
     )(req, res, next);
   },
@@ -179,7 +180,7 @@ app.get('/auth/openid/return',
     passport.authenticate('azuread-openidconnect',
       {
         response: res,
-        failureRedirect: '/'
+		failureRedirect: '/'
       }
     )(req, res, next);
   },
@@ -193,7 +194,7 @@ app.post('/auth/openid/return',
     passport.authenticate('azuread-openidconnect',
       {
         response: res,                      // required
-        failureRedirect: '/'
+		failureRedirect: '/'
       }
     )(req, res, next);
   },
@@ -210,8 +211,8 @@ app.get('/logout', function (req, res) {
 });
 
 app.get('/unauthorized', function (req, res) {
-  res.status(401);
-  res.render('unauthorized', {user: req.user});
+	res.status(401);
+	res.render('unauthorized', {user: req.user});
 });
 
 // HOMEPAGE
