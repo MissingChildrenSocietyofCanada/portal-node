@@ -15,14 +15,17 @@ var ProfileApi = require('./apis/profiles');
 var TokenApi = require('./apis/token');
 const appInsights = require("applicationinsights");
 
-appInsights.setup(config.AppInsights);
-appInsights
-    .setAutoDependencyCorrelation(true)
-    .setAutoCollectRequests(true)
-    .setAutoCollectPerformance(true)
-    .setAutoCollectExceptions(true)
-    .setAutoCollectDependencies(true)
-    .start();
+if (config.AppInsights) {
+	appInsights.setup(config.AppInsights)
+		.setAutoDependencyCorrelation(true)
+		.setAutoCollectRequests(true)
+		.setAutoCollectPerformance(true)
+		.setAutoCollectExceptions(true)
+		.setAutoCollectDependencies(true)
+		.setAutoCollectConsole(true, true)
+		.setUseDiskRetryCaching(true)
+		.start();
+}
 
 // Controllers
 var profiles = require('./controllers/profilesController');
