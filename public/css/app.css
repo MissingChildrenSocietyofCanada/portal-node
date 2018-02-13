@@ -239,6 +239,25 @@ img {
     margin-top: 25px;
 }
 
+.navbar-header>.navbar-brand.active {
+	color: #fff;
+   /* background-color: #080808;*/
+}
+
+.navbar-toggle.pull-left {
+	margin-left: 10px;
+	margin-right: auto;
+}
+
+.navbar-text.navbar-logout {
+	margin-top: 10px;
+	margin-bottom: 0px;
+	color: #ddd;
+}
+
+.navbar-fixed-top .navbar-collapse {
+    max-height: none;
+}
 
 /***** Media queries *****/
 
@@ -248,11 +267,23 @@ img {
 @media (min-width: 768px) and (max-width: 991px) {
 }
 
+@media (min-width: 768px) {
+	.navbar-text {
+		margin-right: 0px;
+	}
+	li.nav-item-logout {
+		display: none;
+	}
+}
+	
 @media (max-width: 767px) {
 
     .inner-bg {
         padding: 60px 0 110px 0;
     }
+	.navbar-logout {
+		display: none !important;
+	}
 }
 
 @media (max-width: 415px) {

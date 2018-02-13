@@ -2,41 +2,68 @@
 <html lang="en">
 
 <head>
-  <title>Missing Children Society Canada: People Finder</title>
+	<title>MCSC: Help Find Me Portal</title>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-  
-	<meta name="description" content="Missing Children Society of Canada: Help Find Me My Profile">
+	<meta name="description" content="Missing Children Society of Canada: Help Find Me Portal">
 	<meta name="author" content="Jef King, Nastassia Rashid, Marc Gagne, Aram Koukia">
+
 	<link rel="icon" href="favicon.ico">
 
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
-    crossorigin="anonymous">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp"
-    crossorigin="anonymous">
-  <link rel="stylesheet" href="/css/app.css">
-  <link rel="stylesheet" href="/css/font-awesome.min.css">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+		crossorigin="anonymous">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp"
+		crossorigin="anonymous">
+	<link rel="stylesheet" href="/css/app.css">
+	<link rel="stylesheet" href="/css/font-awesome.min.css">
 
-  <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.2.1.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
-    crossorigin="anonymous"></script>
+	<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.2.1.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+		crossorigin="anonymous"></script>
 </head>
 
 <body class="<%= locals.bodyCss ? locals.bodyCss : '' %>">
-  <nav class="navbar navbar-default navbar-fixed-top">
-    <div class="container-fluid">
-      <div class="navbar-header">
-        <a class="navbar-brand" href="/">People Finder</a>
-      </div>
-      <% if (user) { %>
-        <div class="navbar-collapse" id="bs-example-navbar-collapse-1">
-          <form class="navbar-form navbar-right">
-            <%= user.displayName %>
-            <a href="/logout" class="btn btn-default"><span class="glyphicon glyphicon-off"></span></a>
-          </form>
-        </div>
-      <% } %>
-    </div>
-  </nav>
+	<nav class="navbar navbar-toggeable navbar-fixed-top navbar-inverse">
+    	<div class="container-fluid">
+      		<div class="navbar-header">
+				<button class="navbar-toggle collapsed pull-left" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+						<span class="navbar-toggler-icon"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					  </button>
+        		<a class="navbar-brand active" href="/">Help Find Me Portal</a>
+			</div>			
+	  		<div class="collapse navbar-collapse" id="navbarSupportedContent">
+				<ul class="nav navbar-nav">
+					<li>
+						<a href="#">Home</a>
+					</li>
+					<li>
+						<a href="#">Registrants</a>
+					</li>
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Admin <span class="caret"></span></a>
+						<ul class="dropdown-menu">
+							<li><a href="#">Option 1</a></li>
+							<li><a href="#">Option 2</a></li>
+							<li><a href="#">Option 3</a></li>
+							<li role="separator" class="divider"></li>
+							<li><a href="#">Option 4</a></li>
+						</ul>
+					</li>
+					<li class="nav-item-logout">
+						<a href="/logout">Logout</a>
+					</li>
+				</ul>
+				<div class="navbar-text pull-right navbar-logout">
+					<% if (user) { %>
+						<%= user.displayName %>&nbsp;
+						<a href="/logout" class="btn btn-default"><span class="glyphicon glyphicon-off"></span></a>
+					<% } %>
+				</div>
+			</div>
+		</div>
+  	</nav>
   <div class="page-wrapper">
