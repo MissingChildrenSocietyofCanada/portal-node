@@ -34,7 +34,8 @@
 						<span class="icon-bar"></span>
 					  </button>
         		<a class="navbar-brand active" href="/">Help Find Me Portal</a>
-			</div>			
+			</div>	
+			<% if (user) { %>		
 	  		<div class="collapse navbar-collapse" id="navbarSupportedContent">
 				<ul class="nav navbar-nav">
 					<li>
@@ -58,12 +59,11 @@
 					</li>
 				</ul>
 				<div class="navbar-text pull-right navbar-logout">
-					<% if (user) { %>
-						<%= user.displayName %>&nbsp;
-						<a href="/logout" class="btn btn-default"><span class="glyphicon glyphicon-off"></span></a>
-					<% } %>
+					<%= user.displayName %>&nbsp;
+					<a href="/logout" class="btn btn-default"><span class="glyphicon glyphicon-off"></span></a>
 				</div>
 			</div>
+			<% } %>
 		</div>
   	</nav>
   <div class="page-wrapper">
