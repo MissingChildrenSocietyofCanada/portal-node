@@ -1,0 +1,66 @@
+<%- include('../views/partials/header.ejs') %>
+
+  <div class="container page home">
+      <div><h1>Registrants</h1></div>
+      <div>
+      <% if (0 == registrants.length){ %>
+          <strong>
+            Currently, there are no registrations.
+          </strong>
+        <% } %>
+
+      <table id="registrant-list" class="table table-hover tr-link">
+        <thead>
+          <td><strong>Registered On</strong></td>
+          <td><strong>Registrant</strong></td>
+          <td><strong>Twitter</strong></td>
+          <td><strong>Facebook</strong></td>
+          <td><strong>Instagram</strong></td>
+        </thead>
+        <tbody>
+          <% for(var i=0; i < registrants.length; i++) { %>
+            <tr data-id="<%= registrants[i].id %>">
+              <td>
+                <%= registrants[i].timestamp ? registrants[i].timestamp.toLocaleString() : '-' %>
+              </td>
+              <td>
+                <%= registrants[i].name %>
+              </td>
+              <td>
+                <% if (registrants[i].twitter){ %>
+                  <img src="<%= registrants[i].twitter.profilepic %>" style="width:125px" class="img-circle" alt="<%= registrants[i].name %>"><br>
+                  <%= registrants[i].twitter.displayName %><br>
+                  <%= registrants[i].twitter.hometown %><br>
+                <% } %>
+              </td>
+              <td>
+                <% if (registrants[i].facebook){ %>
+                  <img src="<%= registrants[i].facebook.profilepic %>" style="width:125px" class="img-circle" alt="<%= registrants[i].name %>"><br>
+                  <%= registrants[i].facebook.displayName %><br>
+                  <%= registrants[i].facebook.hometown %><br>
+                <% } %>
+              </td>
+              <td>
+                <% if (registrants[i].instagram){ %>
+                  <img src="<%= registrants[i].instagram.profilepic %>" style="width:125px" class="img-circle" alt="<%= registrants[i].name %>"><br>
+                  <%= registrants[i].instagram.displayName %><br>
+                  <%= registrants[i].instagram.hometown %><br>
+                <% } %>
+              </td>
+            </tr>
+            <% } %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <script>
+    $(document).ready(() => {
+      $("#registrant-list >tbody >tr").each((index, element) => {
+        $(element).click((e, elem) => {
+          // window.location.href = "/registrant/" + $(e.delegateTarget).data("id");
+        })
+      })
+    });
+  </script>
+
+  <% include ../views/partials/footer %>
