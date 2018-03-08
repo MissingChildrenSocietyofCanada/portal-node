@@ -4,9 +4,9 @@ var config = require('../config');
 var ProfileApi = require('../apis/profiles');
 
 exports.list = function (req, res) {
-  new ProfileApi(config.docDB).getList().then(function (profiles) {
-    res.json(profiles);
-  });
+	new ProfileApi(config.docDB).getList().then(function (profiles) {
+		res.json(profiles);
+	});
 };
 
 exports.show = function (req, res) {
@@ -15,9 +15,9 @@ exports.show = function (req, res) {
       user: req.user,
       profile: profile
     });
-  }).catch((err) => { res.render('profiles/show', {
-    user: req.user
-  })
+  }).catch((err) => {
+    res.render('profiles/show', {
+      user: req.user
+    });
   });
-  ;
 }
