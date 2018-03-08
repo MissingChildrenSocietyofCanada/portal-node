@@ -21,6 +21,11 @@
 	<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.2.1.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
 		crossorigin="anonymous"></script>
+
+	<link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid.min.css" />
+	<link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid-theme.min.css" />
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid.min.js"></script>
+		
 </head>
 
 <body class="<%= locals.bodyCss ? locals.bodyCss : '' %>">
@@ -35,7 +40,7 @@
 					  </button>
         		<a class="navbar-brand active" href="/">Help Find Me Portal</a>
 			</div>	
-			<% if (user) { %>		
+			<% if (typeof user != 'undefined' && user) { %>		
 	  		<div class="collapse navbar-collapse" id="navbarSupportedContent">
 				<ul class="nav navbar-nav">
 					<li>

@@ -28,10 +28,10 @@ Profile.prototype.getUserPhotoFromEvent = function (event) {
         case 'instagram':
             return event.response.data.profile_picture;
         case 'facebook':
-            return event.response.data.picture.data.url;
+            return (event.response.data.picture ? event.response.data.picture.data.url : null);
         case 'twitter':
             // by removing '_normal' you get a much higher resolution image from Twitter
-            return event.response.data.profile_image_url.replace('_normal.', '.');
+            return (event.response.data.profile_image_url ? event.response.data.profile_image_url.replace('_normal.', '.') : null);
         default:
             return null;
     }
@@ -226,6 +226,7 @@ Profile.prototype.buildProfiles = function (events) {
 
             mostRecentPlatform: event.response.platform,
             triggeredOn: new Date(event.triggeredOn),
+            triggeredFrom: event.request ? event.request.platform : 'unknown',
             name: this.getNameFromEvent(event),
             photo: this.getUserPhotoFromEvent(event),
             birthday: null,
@@ -298,8 +299,8 @@ Profile.prototype.getList = function () {
 
         const query = 'SELECT * FROM c WHERE c.response.type =\'profile\' ORDER BY c.triggeredOn DESC';
 
-        const options = {
-            enableCrossPartitionQuery: true
+        var options = {
+            enableCrossPartitionQuery : true
         };
 
         docDbClient.queryDocuments(this.config.CollLink, query, options).toArray((err, results) => {
@@ -337,6 +338,7 @@ Profile.prototype.get = function (id) {
 
             if (!profile) {
                 reject("Profile not found");
+ //               resolve(profile); // return no profile
                 return;
             }
 

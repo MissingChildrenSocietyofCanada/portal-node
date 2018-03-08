@@ -1,66 +1,75 @@
-<%- include('../views/partials/header.ejs') %>
+<% include ../views/partials/header %>
 
   <div class="container page home">
+    <div>
       <div><h1>Registrants</h1></div>
-      <div>
-      <% if (0 == registrants.length){ %>
-          <strong>
-            Currently, there are no registrations.
-          </strong>
-        <% } %>
-
-      <table id="registrant-list" class="table table-hover tr-link">
-        <thead>
-          <td><strong>Registered On</strong></td>
-          <td><strong>Registrant</strong></td>
-          <td><strong>Twitter</strong></td>
-          <td><strong>Facebook</strong></td>
-          <td><strong>Instagram</strong></td>
-        </thead>
-        <tbody>
-          <% for(var i=0; i < registrants.length; i++) { %>
-            <tr data-id="<%= registrants[i].id %>">
-              <td>
-                <%= registrants[i].timestamp ? registrants[i].timestamp.toLocaleString() : '-' %>
-              </td>
-              <td>
-                <%= registrants[i].name %>
-              </td>
-              <td>
-                <% if (registrants[i].twitter){ %>
-                  <img src="<%= registrants[i].twitter.profilepic %>" style="width:125px" class="img-circle" alt="<%= registrants[i].name %>"><br>
-                  <%= registrants[i].twitter.displayName %><br>
-                  <%= registrants[i].twitter.hometown %><br>
-                <% } %>
-              </td>
-              <td>
-                <% if (registrants[i].facebook){ %>
-                  <img src="<%= registrants[i].facebook.profilepic %>" style="width:125px" class="img-circle" alt="<%= registrants[i].name %>"><br>
-                  <%= registrants[i].facebook.displayName %><br>
-                  <%= registrants[i].facebook.hometown %><br>
-                <% } %>
-              </td>
-              <td>
-                <% if (registrants[i].instagram){ %>
-                  <img src="<%= registrants[i].instagram.profilepic %>" style="width:125px" class="img-circle" alt="<%= registrants[i].name %>"><br>
-                  <%= registrants[i].instagram.displayName %><br>
-                  <%= registrants[i].instagram.hometown %><br>
-                <% } %>
-              </td>
-            </tr>
-            <% } %>
-        </tbody>
-      </table>
+      <div></div>
+      <div class="jumbotron">
+        <div class="row">
+          Registrant Name: <input id="reginame" type="text"/>
+          &nbsp;&nbsp;<button type="button" id="find" onclick="find();">Find</button>
+        </div>
+      </div>
+      <div id="regigrid"></div>
     </div>
   </div>
-  <script>
-    $(document).ready(() => {
-      $("#registrant-list >tbody >tr").each((index, element) => {
-        $(element).click((e, elem) => {
-          // window.location.href = "/registrant/" + $(e.delegateTarget).data("id");
-        })
-      })
-    });
-  </script>
 
-  <% include ../views/partials/footer %>
+<script>
+
+  $('#reginame').keypress(function (e) {
+    if (e.which == 13) {
+      $('#find').click();
+      return false;
+    }
+  });
+
+  function find()
+  {
+      $("#regigrid").jsGrid("search", {
+          name: $("#reginame").val()
+      });
+  }
+
+  function renderSocial(value, item)
+  {
+    return (value ? "<img src=\"" + value.profilepic + "\" style=\"height:110px\" class=\"img-circle\" alt=\"" + item.name + "\"><br>" +
+          value.displayName + "<br>" + value.hometown + "<br>" : "");
+  }
+
+  function renderDateTimeCell(value, item)
+  {
+    if (value) { return new Date(value).toLocaleString("en-US"); }
+    return "unknown";
+  }
+
+	$("#regigrid").jsGrid({
+		width: "100%",
+		height: "600px",
+
+    autoload: false,
+    filtering: false,
+		sorting: true,
+    paging: true,
+    pageSize: 5,
+    noDataContent: "Currently, there are no registrations.",
+    // rowClick: function(args) { window.location.href = "/registrant/" + args.item.id; },
+
+		controller: {
+      loadData: function(filter) { return $.ajax({type: "GET", url: "/api/registrants", data: filter }); },
+      insertItem: $.noop,
+      updateItem: $.noop,
+      deleteItem: $.noop
+    },
+
+		fields: [
+      { title: "Registrant Name", name: "name", type: "text" },
+      { title: "Registered On", name: "registeredOn", type: "text", itemTemplate: renderDateTimeCell },
+      { title: "Twitter", name: "twitter", type: "text", align: "center", filtering: false, itemTemplate: renderSocial },
+      { title: "Facebook", name: "facebook", type: "text", align: "center", filtering: false, itemTemplate: renderSocial },
+      { title: "Instagram", name: "instagram", type: "text", align: "center", filtering: false, itemTemplate: renderSocial }
+
+		]
+  });
+</script>
+
+<% include ../views/partials/footer %>

@@ -11,7 +11,7 @@ var passport = require('passport');
 //var util = require('util');
 var bunyan = require('bunyan');
 var config = require('./config');
-var ProfileApi = require('./apis/profiles');
+//var ProfileApi = require('./apis/profiles');
 var RegistrantsApi = require('./apis/registrants');
 var TokenApi = require('./apis/token');
 const appInsights = require('applicationinsights');
@@ -30,7 +30,7 @@ if (config.AppInsights) {
 
 // Controllers
 var profiles = require('./controllers/profilesController');
-// var registrants = require('./controllers/profilesController');
+var registrants = require('./controllers/registrantsController');
 var token = require('./controllers/tokenController');
 
 var OIDCStrategy = require('passport-azure-ad').OIDCStrategy;
@@ -114,6 +114,12 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(app.router);
+
+function disableCaching(res) {
+	res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1.
+	res.setHeader("Pragma", "no-cache"); // HTTP 1.0.
+	res.setHeader("Expires", "0"); // Proxies.
+}
 
 function ensureAuthorized(req, res, next) {
 	if (req.isAuthenticated()) {
@@ -223,30 +229,33 @@ app.get('/unauthorized', function (req, res) {
 
 // HOMEPAGE
 app.get('/', ensureAuthorized, function (req, res) {
-	new ProfileApi(config.docDB).getList().then((profiles) => {
-		res.render('index', {
-			user: req.user,
-			profiles: profiles
-		});
-	})
+	disableCaching(res);
+	res.render('index', { user: req.user});
 });
 
-// PROFILES
+// PROFILE
 app.get('/profile/:id', ensureAuthorizedOrToken, profiles.show);
 
 // REGISTRANTS
 app.get('/registrants', ensureAuthorizedOrToken, function (req, res) {
-	new RegistrantsApi(config.docDB).getList().then((registrants) => {
-		res.render('registrants', {
-			user: req.user,
-			registrants: registrants
-		});
-	})
+	disableCaching(res);
+	res.render('registrants', { user: req.user});
+});
+
+
+// ERROR HANDLER
+const HTTP_SERVER_ERROR = 500;
+app.use(function(err, req, res, next) {
+  if (res.headersSent) {
+    return next(err);
+  }
+
+  return res.status(err.status || HTTP_SERVER_ERROR).render('error', { err: err });
 });
 
 // APIS
 app.get('/api/profiles', ensureAuthorized, profiles.list);
-// app.get('/api/registrants', ensureAuthorized, registrants.list);
+app.get('/api/registrants', ensureAuthorized, registrants.list);
 app.put('/api/notify', ensureAuthorized, token.send);
 app.post('/api/notify', ensureAuthorized, token.send);
 

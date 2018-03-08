@@ -15,5 +15,9 @@ exports.show = function (req, res) {
       user: req.user,
       profile: profile
     });
+  }).catch((err) => { res.render('profiles/show', {
+    user: req.user
+  })
   });
+  ;
 }

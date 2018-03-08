@@ -1,54 +1,62 @@
-<%- include('../views/partials/header.ejs') %>
+<% include ../views/partials/header %>
 
   <div class="container page home">
     <div>
       <div><h1>Missing</h1></div>
-      <% if (0 == profiles.length){ %>
-          <strong>
-            Currently, there are no missing persons.
-          </strong>
-        <% } %>
-
-      <table id="profile-list" class="table table-hover tr-link">
-        <thead>
-          <td><strong>Missing Person</strong></td>
-          <td><strong>Name</strong></td>
-          <td><strong>Date of Birth</strong></td>
-          <td><strong>Triggered</strong></td>
-          <td><strong>Gender</strong></td>
-        </thead>
-        <tbody>
-          <% for(var i=0; i < profiles.length; i++) { %>
-            <tr data-id="<%= profiles[i].id %>">
-              <td>
-                <img src="<%= profiles[i].photo %>" style="width:125px" class="img-circle" alt="<%= profiles[i].name %>">
-              </td>
-              <td>
-                <%= profiles[i].name %>
-              </td>
-              <td>
-                <%= profiles[i].birthday ? profiles[i].birthday.toLocaleDateString() : "" %>
-              </td>
-              <td>
-                <%= profiles[i].triggeredOn.toLocaleString() %>
-              </td>
-              <td>
-                <%= profiles[i].gender %>
-              </td>
-            </tr>
-            <% } %>
-        </tbody>
-      </table>
+      <div></div>
+      <div id="missinggrid"></div>
     </div>
   </div>
-  <script>
-    $(document).ready(() => {
-      $("#profile-list >tbody >tr").each((index, element) => {
-        $(element).click((e, elem) => {
-          window.location.href = "/profile/" + $(e.delegateTarget).data("id");
-        })
-      })
-    });
-  </script>
 
-  <% include ../views/partials/footer %>
+<script> 
+  function renderPersonCell(value, item)
+  {
+    return "<img src=\"" + item.photo + "\" style=\"height:110px\" class=\"img-circle\" alt=\"" + value + "\">";
+  }
+
+  function renderDateCell(value, item)
+  {
+    if (value) { return new Date(value).toLocaleDateString("en-US"); }
+    return "unknown";
+  }
+
+  function renderDateTimeCell(value, item)
+  {
+    if (value) { return new Date(value).toLocaleString("en-US"); }
+    return "unknown";
+  }
+
+	$("#missinggrid").jsGrid({
+		width: "100%",
+		height: "600px",
+
+    autoload: true,
+		sorting: true,
+    paging: true,
+    pageSize: 5,
+    noDataContent: "Currently, there are no missing persons.",
+    rowClick: function(args) { window.location.href = "/profile/" + args.item.id; },
+
+		controller: {
+      loadData: function(filter) { return $.ajax({type: "GET", url: "/api/profiles" }); },
+      insertItem: $.noop,
+      updateItem: $.noop,
+      deleteItem: $.noop
+    },
+
+		fields: [
+      { title: "Missing Person", name: "name", type: "text", align: "center", itemTemplate: renderPersonCell },
+      { title: "Name", name: "name", type: "text" },
+      { title: "Gender", name: "gender" },
+      { title: "Date of Birth", name: "birthday", type: "text", itemTemplate: renderDateCell },
+      { title: "Age", name: "age", type: "text", width: "50px", sorter: function(int1, int2) {
+        return parseInt(int1 ? int1 : "0", 10) - parseInt(int2 ? int2 : "0", 10);
+        }
+      },
+      { title: "Triggered On", name: "triggeredOn", type: "text", width: "150px", itemTemplate: renderDateTimeCell },
+      { title: "Triggered From", name: "triggeredFrom", type: "text" }
+		]
+  });
+</script>
+
+<% include ../views/partials/footer %>

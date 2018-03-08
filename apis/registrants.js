@@ -79,7 +79,7 @@ Registrant.prototype.getInstagramFromSocial = function (social) {
 
 // build registrant(s) for use on both the list and detail pages.
 Registrant.prototype.buildRegistrants = function (socials) {
-    let registrants = {};
+    let registrants = [];
 
     socials.forEach((social) => {
         let userid = social.id;
@@ -87,49 +87,39 @@ Registrant.prototype.buildRegistrants = function (socials) {
         let registrant = registrants[userid] || {
             id: userid,
             name: this.getNameFromSocial(social),
-            timestamp: this.getDateFromTimestamp(social._ts),
+            registeredOn: this.getDateFromTimestamp(social._ts),
             photo: this.getUserPhotoFromSocial(social),
             twitter: this.getTwitterFromSocial(social),
             facebook: this.getFacebookFromSocial(social),
             instagram: this.getInstagramFromSocial(social)
         };
 
-/*
-        this.assignIfNotNull(registrant, 'email', null);
-        this.assignIfNotNull(registrant, 'gender', null);
-        this.assignIfNotNull(registrant, 'birthday', null);
-        this.assignIfNotNull(registrant.social.twitter, 'handle', null);
-        this.assignIfNotNull(registrant.social.instagram, 'handle', null);
-        this.assignIfNotNull(registrant.social.facebook, 'profile', null);
-*/
-        registrants[userid] = registrant;
+        registrants.push(registrant);
     });
 
     return registrants;
 }
 
-Registrant.prototype.getList = function () {
+Registrant.prototype.getList = function (name) {
     return new Promise((resolve, reject) => {
-        const docDbClient = new DocumentDBClient(this.config.Host, { masterKey: this.config.AuthKey });
+        if (name && name.trim()) {
+            const docDbClient = new DocumentDBClient(this.config.Host, { masterKey: this.config.AuthKey });
 
-        // const query = 'SELECT * FROM c WHERE c.response.type =\'profile\' ORDER BY c.triggeredOn DESC';
-        const query = 'SELECT * FROM c ORDER BY c._ts';
+            const querySpec = {
+                query: 'SELECT * FROM c WHERE CONTAINS(LOWER(c.facebook.name),@name) OR CONTAINS(LOWER(c.twitter.displayName),@name) OR CONTAINS(LOWER(c.instagram.displayName),@name) ORDER BY c._ts',
+                parameters: [{name: '@name', value: name.trim().toLowerCase() }]
+            };
 
-        const options = {
-            enableCrossPartitionQuery: true
-        };
+            const options = {
+                enableCrossPartitionQuery: true
+            };
 
-        docDbClient.queryDocuments(this.config.CollLink, query, options).toArray((err, results) => {
-            let registrants = this.buildRegistrants(results);
-
-            // convert to array
-            let registrantArray = [];
-            for (var key in registrants) {
-                registrantArray.push(registrants[key]);
-            }
-
-            resolve(registrantArray);
-        });
+            docDbClient.queryDocuments(this.config.CollLink, querySpec, options).toArray((err, results) => {
+                resolve(this.buildRegistrants(results));
+            });
+        } else {
+            resolve([]);
+        }
     });
 }
 
@@ -138,7 +128,7 @@ Registrant.prototype.get = function (id) {
         const docDbClient = new DocumentDBClient(this.config.Host, { masterKey: this.config.AuthKey });
 
         var querySpec = {
-            query: 'SELECT * FROM c WHERE c.response.type =\'profile\' AND c.user.id = @id ORDER BY c.triggeredOn DESC', 
+            query: 'SELECT * FROM c WHERE c.id = @id ORDER BY c.triggeredOn DESC',
             parameters: [{name: '@id',  value: id}]
         };
 

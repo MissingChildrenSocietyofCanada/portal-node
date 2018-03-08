@@ -1,6 +1,9 @@
 <% include ../../views/partials/header %>
 <div class="container page profile">
   <div><h1>Missing Person</h1></div>
+  <% if (typeof profile == 'undefined' || !profile) { %>
+    <div>Profile not found.</div>
+  <% } else { %>
   <div class="jumbotron">
     <div class="row">
       <div class="col-md-4">
@@ -214,6 +217,7 @@
       </div>
     <% } %>
   </div>
+  <% } %>
 </div>
 
 <script>
