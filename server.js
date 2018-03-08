@@ -12,6 +12,7 @@ var passport = require('passport');
 var bunyan = require('bunyan');
 var config = require('./config');
 var ProfileApi = require('./apis/profiles');
+var RegistrantsApi = require('./apis/registrants');
 var TokenApi = require('./apis/token');
 const appInsights = require('applicationinsights');
 
@@ -29,6 +30,7 @@ if (config.AppInsights) {
 
 // Controllers
 var profiles = require('./controllers/profilesController');
+// var registrants = require('./controllers/profilesController');
 var token = require('./controllers/tokenController');
 
 var OIDCStrategy = require('passport-azure-ad').OIDCStrategy;
@@ -232,8 +234,19 @@ app.get('/', ensureAuthorized, function (req, res) {
 // PROFILES
 app.get('/profile/:id', ensureAuthorizedOrToken, profiles.show);
 
+// REGISTRANTS
+app.get('/registrants', ensureAuthorizedOrToken, function (req, res) {
+	new RegistrantsApi(config.docDB).getList().then((registrants) => {
+		res.render('registrants', {
+			user: req.user,
+			registrants: registrants
+		});
+	})
+});
+
 // APIS
 app.get('/api/profiles', ensureAuthorized, profiles.list);
+// app.get('/api/registrants', ensureAuthorized, registrants.list);
 app.put('/api/notify', ensureAuthorized, token.send);
 app.post('/api/notify', ensureAuthorized, token.send);
 
